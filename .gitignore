@@ -1,0 +1,14 @@
+# backend
+backend/__pycache__/
+backend/**/__pycache__/
+backend/.env
+backend/.venv/
+*.pyc
+
+# frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# 공통
+.DS_Store
