@@ -1,15 +1,15 @@
 # main.py
 import json
 import sqlite3
-from typing import List
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 # [DB 비즈니스 로직 임포트]
 from database.db_handler import (
-    get_connection, init_db, get_latest_news, 
-    get_or_create_user, check_user_exists, toggle_favorite_in_db, 
+    get_connection, init_db, get_latest_news,
+    get_or_create_user, check_user_exists, toggle_favorite_in_db,
     get_daily_summary, get_daily_summary_by_date,
     get_realtime_trend_keywords,
     get_favorites_by_user, get_favorite_ids_by_user, news_exists,  # 👈 추가
@@ -17,12 +17,19 @@ from database.db_handler import (
 # [AI/알고리즘 모듈 임포트]
 from utils.cluster import cluster_and_get_top_news
 
-app = FastAPI(title="실시간 뉴스 요약 프로젝트 API 서버 (멀티라벨 통합판)")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_db()
+    yield
+
+
+app = FastAPI(title="실시간 뉴스 요약 프로젝트 API 서버 (멀티라벨 통합판)", lifespan=lifespan)
 
 # 프론트엔드(Vite / React 기본 포트) CORS 설정
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["http://localhost:5173", "https://project-2-omega-seven.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -39,11 +46,6 @@ def _expand_categories(row_dict):
     cat = row_dict.get("category") or ""
     row_dict["categories"] = [c for c in str(cat).split(SEP) if c]
     return row_dict
-
-
-@app.on_event("startup")
-def startup_event():
-    init_db()
 
 
 @app.get("/")
