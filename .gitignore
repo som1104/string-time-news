@@ -12,3 +12,9 @@ frontend/.env
 
 # 공통
 .DS_Store
+
+*.zip
+backend/logs/
+backend/*.log
+backend/utils/classifier_errors.csv
+backend/utils/ambiguous_classifications.csv
