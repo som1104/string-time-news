@@ -91,20 +91,20 @@ export default function CategoryNews({ pointColor, bookmarks, onToggleBookmark }
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+    <div className="bg-white p-4 md:p-6 rounded-2xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
       
-      <div className="mb-6 pb-5 border-b border-slate-100 space-y-4">
+      <div className="mb-4 md:mb-6 pb-4 md:pb-5 border-b border-slate-100 space-y-3 md:space-y-4">
         
         {/* 첫 번째 줄: 제목 및 카테고리 탭 목록 */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <h2 className="text-2xl font-bold text-[#1A1F27]">카테고리 트렌드</h2>
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 md:gap-4">
+          <h2 className="shrink-0 whitespace-nowrap text-xl md:text-2xl font-bold text-[#1A1F27]">카테고리 트렌드</h2>
           
-          <div className="flex flex-wrap gap-1.5 p-1 bg-[#F2F4F6] rounded-xl w-full lg:w-auto">
+          <div className="no-scrollbar flex flex-nowrap overflow-x-auto gap-1.5 p-1 bg-[#F2F4F6] rounded-xl w-full min-w-0 lg:w-auto">
             {CATEGORY_LIST.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`flex-1 lg:flex-none text-xs font-semibold px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
+                className={`flex-1 lg:flex-none shrink-0 whitespace-nowrap text-xs font-semibold px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
                   activeCategory === cat 
                     ? "bg-white text-[#3182F6] shadow-sm font-bold" 
                     : "text-[#4E5968] hover:text-[#1A1F27]"
@@ -117,13 +117,12 @@ export default function CategoryNews({ pointColor, bookmarks, onToggleBookmark }
         </div>
 
         {/* 💡 두 번째 줄: 최근 5개 날짜 단추 배열형 UI 배치 */}
-        <div className="flex flex-wrap items-center justify-end gap-2">
-          <span className="text-xs font-bold text-slate-400 mr-1 select-none"></span>
+        <div className="no-scrollbar flex flex-nowrap overflow-x-auto items-center justify-start md:justify-end gap-2">
           
           {/* 전체 기간 선택 버튼 */}
           <button
             onClick={() => setSelectedDate("")}
-            className={`text-xs font-bold px-3 py-1.5 rounded-xl transition-all cursor-pointer border ${
+            className={`shrink-0 whitespace-nowrap text-xs font-bold px-3 py-1.5 rounded-xl transition-all cursor-pointer border ${
               selectedDate === ""
                 ? "bg-slate-800 text-white border-transparent shadow-sm"
                 : "bg-white text-slate-500 border-slate-200 hover:bg-slate-50 hover:text-slate-800"
@@ -139,7 +138,7 @@ export default function CategoryNews({ pointColor, bookmarks, onToggleBookmark }
               <button
                 key={item.dateStr}
                 onClick={() => handleDateClick(item.dateStr)}
-                className={`text-xs font-bold px-3 py-1.5 rounded-xl transition-all cursor-pointer border ${
+                className={`shrink-0 whitespace-nowrap text-xs font-bold px-3 py-1.5 rounded-xl transition-all cursor-pointer border ${
                   isSelected
                     ? "text-white border-transparent shadow-sm"
                     : "bg-white text-slate-500 border-slate-200 hover:bg-slate-50 hover:text-[#1A1F27]"
@@ -163,33 +162,36 @@ export default function CategoryNews({ pointColor, bookmarks, onToggleBookmark }
             const isBookmarked = bookmarks && bookmarks.some((b) => b.id === news.id);
 
             return (
-              <div key={news.id || idx} className="p-4 bg-white border border-[#F2F4F6] rounded-xl hover:bg-[#F9FAFB] transition-colors group relative flex gap-4">
+              <div key={news.id || idx} className="p-3 sm:p-4 bg-white border border-[#F2F4F6] rounded-xl hover:bg-[#F9FAFB] transition-colors group relative flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <img
                   src={news.image_url || defaultImg}
                   alt={news.title || "뉴스 이미지"}
-                  className="w-28 md:w-36 self-stretch shrink-0 object-cover rounded-lg border border-slate-100"
+                  className="w-full aspect-[16/9] sm:w-28 sm:h-28 md:w-36 md:h-32 shrink-0 object-cover rounded-lg border border-slate-100"
                   onError={(e) => { e.target.src = defaultImg; }}
                 />
 
                 <div className="flex-1 min-w-0">
-                  <div className="flex justify-between items-start">
+                  <div className="flex justify-between items-start gap-2">
                     <CategoryBadges categories={normalizeCategories(news).length > 0 ? normalizeCategories(news) : ["일반"]} size="sm" />
 
                     <button
                       onClick={() => onToggleBookmark(news)}
-                      className="text-lg cursor-pointer transition-transform hover:scale-110"
+                      className="shrink-0 text-lg leading-none cursor-pointer transition-transform hover:scale-110"
                       style={{ color: isBookmarked ? pointColor : "#C4C4C4" }}
                     >
                       {isBookmarked ? "★" : "☆"}
                     </button>
                   </div>
 
-                  <a href={news.original_url} target="_blank" rel="noreferrer" className="block text-lg font-bold text-[#1A1F27] mt-2 mb-3 hover:text-blue-500 transition-colors">
+                  <a href={news.original_url} target="_blank" rel="noreferrer" className="text-base md:text-lg font-bold leading-snug break-keep break-words line-clamp-2 text-[#1A1F27] mt-2 mb-2 sm:mb-3 hover:text-blue-500 transition-colors">
                     {news.title}
                   </a>
-                  <div className="p-3 bg-[#F9FAFB] rounded-xl space-y-1">
+                  <div className="p-2.5 sm:p-3 bg-[#F9FAFB] rounded-xl space-y-1">
                     {[news.summary_1, news.summary_2, news.summary_3].filter(Boolean).map((s, i) => (
-                      <p key={i} className="text-xs text-[#4E5968] flex gap-1"><span>·</span>{s}</p>
+                      <p key={i} className="flex gap-1 text-xs leading-relaxed text-[#4E5968]">
+                        <span className="shrink-0">·</span>
+                        <span className="min-w-0 break-keep break-words">{s}</span>
+                      </p>
                     ))}
                   </div>
                 </div>

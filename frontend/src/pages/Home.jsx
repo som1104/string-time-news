@@ -105,24 +105,24 @@ const Home = () => {
       />
 
       {/* 1. 메인 타이틀 및 날씨 섹션 */}
-      <div className="max-w-4xl mx-auto px-5 py-16 md:py-18 text-center select-none">
+      <div className="max-w-4xl mx-auto px-4 sm:px-5 py-10 sm:py-16 md:py-18 text-center select-none">
 
-        <div className="inline-flex items-center gap-2 text-[11px] font-black tracking-widest uppercase bg-white border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.01)] px-4 py-1.5 rounded-full mb-6">
-          <span className="w-1.5 h-1.5 rounded-full animate-ping" style={{ backgroundColor: pointColor }}></span>
+        <div className="inline-flex max-w-full items-center gap-2 whitespace-nowrap text-[10px] sm:text-[11px] font-black tracking-wider sm:tracking-widest uppercase bg-white border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.01)] px-3 sm:px-4 py-1.5 rounded-full mb-5 sm:mb-6">
+          <span className="w-1.5 h-1.5 shrink-0 rounded-full animate-ping" style={{ backgroundColor: pointColor }}></span>
           <span className="text-slate-500 font-extrabold">Realtime</span>
           <span style={{ color: pointColor }}>AI Summary Engine</span>
         </div>
 
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-[1000] tracking-tight leading-[1.25] mb-2 text-[#1A1F27] keep-all break-keep flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
+        <h1 className="text-[1.75rem] min-[360px]:text-4xl sm:text-5xl md:text-6xl font-[1000] tracking-tight leading-[1.25] mb-2 text-[#1A1F27] keep-all break-keep flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
           <span
-            className="inline-flex items-center justify-center w-14 h-14 sm:w-18 sm:h-18 md:w-20 md:h-20 text-white rounded-3xl shadow-md transform -rotate-3 transition-transform hover:rotate-0"
+            className="inline-flex shrink-0 items-center justify-center w-12 h-12 min-[360px]:w-14 min-[360px]:h-14 sm:w-18 sm:h-18 md:w-20 md:h-20 text-white rounded-3xl shadow-md transform -rotate-3 transition-transform hover:rotate-0"
             style={{ backgroundColor: pointColor }}
           >
-            <Orbit size={40} strokeWidth={2.5} />
+            <Orbit size={40} strokeWidth={2.5} className="w-8 h-8 min-[360px]:w-10 min-[360px]:h-10" />
           </span>
 
           <span
-            className="bg-clip-text text-transparent bg-gradient-to-r"
+            className="max-w-full break-words bg-clip-text text-transparent bg-gradient-to-r"
             style={{ backgroundImage: `linear-gradient(135deg, #1A1F27 40%, ${pointColor} 100%)` }}
           >
             STRING TIME NEWS<br className="hidden sm:inline" />
@@ -134,16 +134,17 @@ const Home = () => {
       </div>
 
       {/* 2. 뉴스 카드 리스트 섹션 */}
-      <div className="max-w-4xl mx-auto px-5 space-y-4 relative group">
+      <div className="max-w-4xl mx-auto px-4 sm:px-5 space-y-4 relative group">
 
-        <div className="mb-2 flex justify-between items-end border-b border-slate-100 pb-3">
-          <div>
-            <h2 className="text-xl font-bold text-gray-800">어제의 핵심 뉴스 TOP 10</h2>
-            <p className="text-xs text-gray-400 mt-0.5">
-              양옆의 화살표 버튼을 눌러서 넘겨보세요
+        <div className="mb-2 flex flex-col sm:flex-row items-start sm:items-end sm:justify-between gap-2 border-b border-slate-100 pb-3">
+          <div className="min-w-0">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-800 break-keep">어제의 핵심 뉴스 TOP 10</h2>
+            <p className="text-xs text-gray-400 mt-0.5 break-keep">
+              <span className="md:hidden">카드를 옆으로 밀어서 넘겨보세요</span>
+              <span className="hidden md:inline">양옆의 화살표 버튼을 눌러서 넘겨보세요</span>
             </p>
           </div>
-          <span className="text-xs font-bold text-slate-400 flex items-center gap-1">
+          <span className="text-xs font-bold text-slate-400 flex items-center gap-1 break-keep sm:text-right">
             📅 어제 날짜 기준 (매일 오전 7시 15분 업데이트)
           </span>
         </div>
@@ -153,7 +154,7 @@ const Home = () => {
             const container = document.getElementById('news-carousel-container');
             if (container) container.scrollBy({ left: -360, behavior: 'smooth' });
           }}
-          className="absolute -left-2 md:-left-6 top-[60%] -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white border border-slate-200 shadow-md flex items-center justify-center font-black text-slate-600 hover:bg-slate-50 hover:text-blue-600 active:scale-95 transition-all opacity-0 group-hover:opacity-100"
+          className="absolute left-0 lg:-left-6 top-[60%] -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white border border-slate-200 shadow-md hidden md:flex items-center justify-center font-black text-slate-600 hover:bg-slate-50 hover:text-blue-600 active:scale-95 transition-all opacity-0 group-hover:opacity-100 focus-visible:opacity-100 pointer-coarse:opacity-100"
           aria-label="이전 뉴스 보기"
         >
           &lt;
@@ -164,7 +165,7 @@ const Home = () => {
             const container = document.getElementById('news-carousel-container');
             if (container) container.scrollBy({ left: 360, behavior: 'smooth' });
           }}
-          className="absolute -right-2 md:-right-6 top-[60%] -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white border border-slate-200 shadow-md flex items-center justify-center font-black text-slate-600 hover:bg-slate-50 hover:text-blue-600 active:scale-95 transition-all opacity-0 group-hover:opacity-100"
+          className="absolute right-0 lg:-right-6 top-[60%] -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white border border-slate-200 shadow-md hidden md:flex items-center justify-center font-black text-slate-600 hover:bg-slate-50 hover:text-blue-600 active:scale-95 transition-all opacity-0 group-hover:opacity-100 focus-visible:opacity-100 pointer-coarse:opacity-100"
           aria-label="다음 뉴스 보기"
         >
           &gt;
@@ -172,7 +173,7 @@ const Home = () => {
 
         <section
           id="news-carousel-container"
-          className="flex flex-row gap-5 overflow-x-auto pb-6 scroll-smooth snap-x snap-mandatory touch-pan-x select-none"
+          className="flex flex-row gap-3 sm:gap-5 overflow-x-auto overscroll-x-contain pb-6 scroll-smooth snap-x snap-mandatory select-none"
           style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}
         >
           <style>{`
@@ -183,7 +184,7 @@ const Home = () => {
             newsList.map((article, articleIdx) => (
               <div
                 key={article.id || articleIdx}
-                className="snap-start shrink-0 w-[85vw] md:w-[calc((100%-40px)/3)] bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-[0_6px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_16px_32px_rgba(0,0,0,0.05)] hover:scale-[1.01] transition-all duration-300"
+                className="snap-start shrink-0 w-[85%] sm:w-[calc((100%-20px)/2)] md:w-[calc((100%-40px)/3)] bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-[0_6px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_16px_32px_rgba(0,0,0,0.05)] hover:scale-[1.01] transition-all duration-300"
               >
                 <div className="bg-transparent h-full flex flex-col justify-between">
                   <NewsCard article={article} bookmarks={bookmarks} onToggleBookmark={toggleBookmark} />
@@ -191,7 +192,7 @@ const Home = () => {
               </div>
             ))
           ) : (
-            <div className="w-full text-center py-12 text-slate-400 font-medium bg-white rounded-2xl border border-dashed border-slate-200">
+            <div className="w-full text-center py-12 px-4 text-slate-400 font-medium break-keep bg-white rounded-2xl border border-dashed border-slate-200">
               조회된 어제 뉴스가 없습니다. 백엔드 DB 서버를 확인해주세요.
             </div>
           )}
@@ -202,4 +203,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Home;

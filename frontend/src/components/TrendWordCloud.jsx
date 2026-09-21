@@ -102,10 +102,10 @@ export default function TrendWordCloud({ pointColor, bookmarks, onToggleBookmark
   };
 
   return (
-    <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm h-full">
+    <div className="bg-white p-4 md:p-6 rounded-3xl border border-slate-100 shadow-sm h-full">
       <div className="mb-4">
-        <h2 className="text-2xl font-bold text-[#1A1F27]">🔥실시간 트렌드</h2>
-        <p className="text-xs text-slate-400 mt-1">단어를 누르면 관련 기사가 아래에 바로 펼쳐집니다.</p>
+        <h2 className="text-xl md:text-2xl font-bold text-[#1A1F27] break-keep">🔥실시간 트렌드</h2>
+        <p className="text-xs text-slate-400 mt-1 break-keep">단어를 누르면 관련 기사가 아래에 바로 펼쳐집니다.</p>
       </div>
       
       {isLoading ? (
@@ -127,18 +127,18 @@ export default function TrendWordCloud({ pointColor, bookmarks, onToggleBookmark
               >
                 <div 
                   onClick={() => handleKeywordToggle(item.text)}
-                  className="p-4 flex items-center justify-between cursor-pointer group bg-[#F8F9FA]/50 hover:bg-[#F8F9FA]"
+                  className="p-3 md:p-4 flex items-center justify-between gap-2 cursor-pointer group bg-[#F8F9FA]/50 hover:bg-[#F8F9FA]"
                 >
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs font-bold text-slate-400 tracking-tighter">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className="shrink-0 whitespace-nowrap text-xs font-bold text-slate-400 tracking-tighter">
                       {index === 0 ? "🔥 " : ""}{index + 1 < 10 ? `0${index + 1}` : index + 1}
                     </span>
-                    <span className="font-bold text-sm text-[#1A1F27] group-hover:text-blue-500 transition-colors">
+                    <span className="min-w-0 truncate font-bold text-sm text-[#1A1F27] group-hover:text-blue-500 transition-colors">
                       {item.text}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md">
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="whitespace-nowrap text-xs font-semibold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md">
                       {item.count}건
                     </span>
                     <span
@@ -151,7 +151,7 @@ export default function TrendWordCloud({ pointColor, bookmarks, onToggleBookmark
                 </div>
 
                 {isTargetOpen && (
-                  <div className="border-t border-slate-50 bg-[#F8F9FA]/30 px-4 py-3 space-y-2.5 animate-in fade-in slide-in-from-top-1 duration-150">
+                  <div className="border-t border-slate-50 bg-[#F8F9FA]/30 px-3 md:px-4 py-3 space-y-2.5 animate-in fade-in slide-in-from-top-1 duration-150">
                     {isNewsLoading ? (
                       <div className="text-center py-4 text-xs font-semibold text-slate-400 animate-pulse">
                         관련 뉴스 기사를 분석 중...
@@ -166,7 +166,7 @@ export default function TrendWordCloud({ pointColor, bookmarks, onToggleBookmark
                                 href={news.original_url || news.url}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="text-xs font-bold text-slate-800 hover:text-blue-600 hover:underline block leading-snug truncate"
+                                className="min-w-0 flex-1 text-xs font-bold text-slate-800 hover:text-blue-600 hover:underline block leading-snug truncate"
                               >
                                 • {news.title}
                               </a>
@@ -180,7 +180,7 @@ export default function TrendWordCloud({ pointColor, bookmarks, onToggleBookmark
                                 </button>
                               )}
                             </div>
-                            <p className="text-[11px] text-slate-400 mt-1 line-clamp-1 pl-2">
+                            <p className="text-[11px] text-slate-400 mt-1 line-clamp-1 pl-2 break-keep break-words">
                               {news.summary_1}
                             </p>
                           </div>
@@ -200,4 +200,4 @@ export default function TrendWordCloud({ pointColor, bookmarks, onToggleBookmark
       )}
     </div>
   );
-}
+}

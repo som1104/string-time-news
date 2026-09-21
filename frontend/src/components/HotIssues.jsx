@@ -34,8 +34,8 @@ export default function HotIssues({ pointColor, bookmarks, onToggleBookmark }) {
   }, []);
 
   return (
-    <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-6">
-      <h2 className="text-2xl font-bold text-[#1A1F27]">⭐실시간 핫이슈 (TOP 5)</h2>
+    <div className="bg-white p-4 md:p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4 md:space-y-6">
+      <h2 className="text-xl md:text-2xl font-bold text-[#1A1F27] break-keep">⭐실시간 핫이슈 (TOP 5)</h2>
 
       {isLoading ? (
         <div className="text-center py-12 text-[#8B95A1] animate-pulse text-sm">핫이슈를 분석하는 중입니다...</div>
@@ -46,7 +46,7 @@ export default function HotIssues({ pointColor, bookmarks, onToggleBookmark }) {
 
             return (
               <div key={issue.id || idx} className="space-y-3 border-b border-slate-50 pb-5 last:border-b-0 last:pb-0">
-                <div className="w-full h-44 bg-slate-100 rounded-2xl overflow-hidden border border-slate-100 relative">
+                <div className="w-full h-40 md:h-44 bg-slate-100 rounded-2xl overflow-hidden border border-slate-100 relative">
                   <img
                     src={issue.image_url || defaultImg}
                     alt={issue.title || "뉴스 이미지"}
@@ -58,11 +58,11 @@ export default function HotIssues({ pointColor, bookmarks, onToggleBookmark }) {
                   </span>
                 </div>
 
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center gap-2">
                   <CategoryBadges categories={normalizeCategories(issue).length > 0 ? normalizeCategories(issue) : ["일반"]} size="sm" />
                   <button
                     onClick={() => onToggleBookmark && onToggleBookmark(issue)}
-                    className="text-lg cursor-pointer transition-transform hover:scale-110"
+                    className="shrink-0 text-lg cursor-pointer transition-transform hover:scale-110"
                     style={{ color: isBookmarked ? pointColor : "#C4C4C4" }}
                   >
                     {isBookmarked ? "★" : "☆"}
@@ -73,11 +73,11 @@ export default function HotIssues({ pointColor, bookmarks, onToggleBookmark }) {
                   href={issue.original_url || issue.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="block font-bold text-base text-[#1A1F27] hover:text-blue-500 transition-colors leading-snug"
+                  className="block font-bold text-base text-[#1A1F27] hover:text-blue-500 transition-colors leading-snug break-keep break-words"
                 >
                   {issue.title}
                 </a>
-                <p className="text-sm text-slate-500 line-clamp-2 leading-relaxed">
+                <p className="text-sm text-slate-500 line-clamp-2 leading-relaxed break-keep break-words">
                   {issue.summary_1 || "요약 내용이 없습니다."}
                 </p>
               </div>
@@ -89,4 +89,4 @@ export default function HotIssues({ pointColor, bookmarks, onToggleBookmark }) {
       )}
     </div>
   );
-}
+}

@@ -1,2 +1,10 @@
 @import "tailwindcss";
 
+/* 가로 스크롤 탭(카테고리·날짜)에서 스크롤바만 숨기고 터치/휠 스크롤은 유지 */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

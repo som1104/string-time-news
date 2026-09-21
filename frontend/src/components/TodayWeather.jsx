@@ -36,10 +36,10 @@ const TodayWeather = () => {
         navigator.geolocation.getCurrentPosition(success, () => {});
     }, [apiKey]);
 
-    if (!weather) return <div className="w-24 h-12 bg-slate-100 rounded-full animate-pulse"></div>;
+    if (!weather) return <div className="w-24 h-12 mx-auto sm:mx-0 bg-slate-100 rounded-full animate-pulse"></div>;
 
     return (
-        <div className="flex items-center gap-2 bg-white border border-slate-200 px-5 h-full rounded-full shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:shadow-md transition-all cursor-default min-w-max">
+        <div className="flex items-center justify-center gap-2 bg-white border border-slate-200 px-5 py-1.5 sm:py-0 h-full rounded-full whitespace-nowrap shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:shadow-md transition-all cursor-default min-w-max">
             {/* ⭕ 이미지 <img> 대신 큼직한 이모지로 렌더링합니다 */}
             <span className="text-2xl drop-shadow-sm pb-1 select-none">
                 {getWeatherEmoji(weather.iconCode)}
@@ -51,4 +51,4 @@ const TodayWeather = () => {
     );
 };
 
-export default TodayWeather;
+export default TodayWeather;

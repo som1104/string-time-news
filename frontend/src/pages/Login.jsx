@@ -80,15 +80,15 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB] px-5 font-sans antialiased">
-      <div className="bg-white p-8 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.015)] border border-slate-100 w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB] px-4 sm:px-5 font-sans antialiased">
+      <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.015)] border border-slate-100 w-full max-w-md">
         
         {/* 서비스 심볼 그래픽 */}
         <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center font-black text-white text-base shadow-md mx-auto mb-4">
           AI
         </div>
         <h2 className="text-2xl font-black text-gray-900 mb-2 text-center tracking-tight">서비스 시작하기</h2>
-        <p className="text-xs text-slate-400 font-medium text-center mb-8">사용하실 닉네임만 입력하면 즉시 로그인이 완료됩니다.</p>
+        <p className="text-xs text-slate-400 font-medium text-center mb-8 break-keep">사용하실 닉네임만 입력하면 즉시 로그인이 완료됩니다.</p>
         
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
           <div>

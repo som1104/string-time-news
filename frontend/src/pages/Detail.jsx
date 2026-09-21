@@ -83,24 +83,24 @@ const Detail = () => {
       />
       
       {/* 본문 레이아웃 컨테이너 */}
-      <div className="max-w-4xl mx-auto px-5 py-12 space-y-8">
+      <div className="max-w-4xl mx-auto px-3 sm:px-5 py-6 md:py-12 space-y-6 md:space-y-8">
         
         {/* ⭕ 검색창 및 날씨 위젯 영역 (Flex 정렬) */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           
           {/* 왼쪽: 검색 바 (flex-1로 남은 공간 꽉 채우기) */}
-          <div className="flex-1 bg-white p-2 md:p-3 rounded-full border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.015)]">
-            <form onSubmit={handleSearch} className="flex gap-2">
+          <div className="w-full min-w-0 sm:flex-1 bg-white p-2 md:p-3 rounded-full border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.015)]">
+            <form onSubmit={handleSearch} className="flex gap-2 min-w-0">
               <input 
                 type="text" 
                 placeholder="궁금한 뉴스 트렌드를 검색해보세요."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 px-4 py-2 text-sm bg-[#F2F4F6] rounded-full focus:bg-white border border-transparent focus:border-slate-200 outline-none transition-all"
+                className="min-w-0 flex-1 px-3 md:px-4 py-2 text-sm text-ellipsis bg-[#F2F4F6] rounded-full focus:bg-white border border-transparent focus:border-slate-200 outline-none transition-all"
               />
               <button 
                 type="submit" 
-                className="px-5 py-2 text-white rounded-full font-bold transition-opacity hover:opacity-90 cursor-pointer text-sm whitespace-nowrap"
+                className="shrink-0 px-4 md:px-5 py-2 text-white rounded-full font-bold transition-opacity hover:opacity-90 cursor-pointer text-sm whitespace-nowrap"
                 style={{ backgroundColor: pointColor }}
               >
                 {isSearching ? "검색 중..." : "검색"}
@@ -109,7 +109,7 @@ const Detail = () => {
           </div>
 
           {/* 오른쪽: 미니 오늘 날씨 위젯 고정 */}
-          <div className="h-[52px] md:h-[60px]">
+          <div className="w-full sm:w-auto shrink-0 h-auto sm:h-[52px] md:h-[60px]">
              <TodayWeather />
           </div>
 
@@ -117,28 +117,28 @@ const Detail = () => {
 
         {/* 🔍 검색 결과 뷰포트 */}
         {searchResults && (
-          <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-            <div className="flex justify-between items-center border-b border-slate-50 pb-3">
-              <h3 className="font-bold text-gray-800">🔍 트렌드 검색 결과 ({searchResults.length}건)</h3>
+          <div className="bg-white p-4 md:p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+            <div className="flex justify-between items-center gap-2 border-b border-slate-50 pb-3">
+              <h3 className="min-w-0 break-keep font-bold text-gray-800">🔍 트렌드 검색 결과 ({searchResults.length}건)</h3>
               <button 
                 onClick={() => { setSearchResults(null); setSearchQuery(""); }}
-                className="text-xs text-gray-400 hover:text-gray-600 font-semibold cursor-pointer"
+                className="shrink-0 whitespace-nowrap text-xs text-gray-400 hover:text-gray-600 font-semibold cursor-pointer"
               >
                 닫기 ✕
               </button>
             </div>
             {searchResults.length > 0 ? (
-              <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+              <div className="space-y-3 md:space-y-4 max-h-[500px] overflow-y-auto pr-1 md:pr-2">
                 {searchResults.map((news, idx) => {
                   const isBookmarked = bookmarks && bookmarks.some((b) => b.id === news.id);
                   return (
-                    <div key={news.id || idx} className="p-4 bg-[#F9FAFB] rounded-xl border border-slate-50 hover:border-slate-200 transition-colors">
+                    <div key={news.id || idx} className="p-3 md:p-4 bg-[#F9FAFB] rounded-xl border border-slate-50 hover:border-slate-200 transition-colors">
                       <div className="flex justify-between items-start gap-2">
                         <a
                           href={news.original_url || news.url}
                           target="_blank"
                           rel="noreferrer"
-                          className="font-bold text-base block text-[#1A1F27] hover:text-blue-500 transition-colors leading-snug"
+                          className="min-w-0 font-bold text-base block text-[#1A1F27] hover:text-blue-500 transition-colors leading-snug break-keep break-words"
                         >
                           {news.title}
                         </a>
@@ -150,7 +150,7 @@ const Detail = () => {
                           {isBookmarked ? "★" : "☆"}
                         </button>
                       </div>
-                      <p className="text-sm text-gray-500 mt-2 line-clamp-2 break-keep leading-relaxed">
+                      <p className="text-sm text-gray-500 mt-2 line-clamp-2 break-keep break-words leading-relaxed">
                       {news.summary_1 || '요약 내용이 제공되지 않습니다.'}
                       </p>
                     </div>
@@ -158,13 +158,13 @@ const Detail = () => {
                 })}
               </div>
             ) : (
-              <p className="text-sm text-gray-400 py-8 text-center font-medium">검색 조건과 일치하는 뉴스가 뉴스룸 DB에 존재하지 않습니다.</p>
+              <p className="text-sm text-gray-400 py-8 text-center font-medium break-keep">검색 조건과 일치하는 뉴스가 뉴스룸 DB에 존재하지 않습니다.</p>
             )}
           </div>
         )}
 
         {/* 트렌드 및 핫이슈 영역 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 [&>*]:min-w-0">
           <TrendWordCloud pointColor={pointColor} bookmarks={bookmarks} onToggleBookmark={toggleBookmark} />
           <HotIssues 
             pointColor={pointColor} 
@@ -185,4 +185,4 @@ const Detail = () => {
   );
 };
 
-export default Detail;
+export default Detail;

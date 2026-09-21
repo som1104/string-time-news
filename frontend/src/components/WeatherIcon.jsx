@@ -45,20 +45,20 @@ const WeatherIcon = () => {
     }, [apiKey]);
 
     if (forecast.length === 0) {
-        return <div className="text-xs text-slate-400 mt-4 py-2 bg-white/50 rounded-full border border-slate-100 max-w-3xl mx-auto">날씨 불러오는 중...</div>;
+        return <div className="text-xs text-slate-400 mt-4 px-4 py-2 bg-white/50 rounded-full border border-slate-100 max-w-3xl mx-auto break-keep">날씨 불러오는 중...</div>;
     }
 
     return (
-        <div className="max-w-3xl mx-auto mt-5 px-6 py-2.5 bg-white border border-slate-100 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col md:flex-row items-center justify-between gap-4 transition-all hover:shadow-[0_4px_25px_rgba(0,0,0,0.05)]">
+        <div className="w-full max-w-3xl mx-auto mt-5 px-4 md:px-6 py-2.5 bg-white border border-slate-100 rounded-3xl md:rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4 transition-all hover:shadow-[0_4px_25px_rgba(0,0,0,0.05)]">
             
-            <div className="flex items-center gap-2 whitespace-nowrap">
+            <div className="flex items-center gap-2 whitespace-nowrap min-w-0 max-w-full">
                 
-                <h3 className="font-extrabold text-slate-700 text-xs flex items-center gap-1">
+                <h3 className="font-extrabold text-slate-700 text-xs flex items-center gap-1 min-w-0 truncate">
                     📍 {address}
                 </h3>
             </div>
 
-            <div className="flex items-center gap-5 md:gap-7 overflow-x-auto w-full md:w-auto px-2" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
+            <div className="flex items-center gap-4 sm:gap-5 md:gap-7 overflow-x-auto w-full min-w-0 md:w-auto px-2" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
                 <style>{`div::-webkit-scrollbar { display: none; }`}</style>
                 {forecast.map((day, idx) => {
                     const date = new Date(day.dt * 1000);
@@ -81,4 +81,4 @@ const WeatherIcon = () => {
     );
 };
 
-export default WeatherIcon;
+export default WeatherIcon;
