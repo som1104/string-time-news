@@ -29,7 +29,14 @@ app = FastAPI(title="실시간 뉴스 요약 프로젝트 API 서버 (멀티라�
 # 프론트엔드(Vite / React 기본 포트) CORS 설정
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "https://project-2-omega-seven.vercel.app"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:4173",
+        "https://project-2-omega-seven.vercel.app",
+        "https://string-time-news.vercel.app",
+    ],
+    # Vercel 미리보기 배포(랜덤 서브도메인)도 허용
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
