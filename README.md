@@ -4,7 +4,7 @@
 
 팀 프로젝트로 제작한 실시간 뉴스 요약 서비스입니다. 여러 언론사의 기사를 이슈 단위로 묶고 요약해, 사용자가 주요 뉴스를 빠르게 파악할 수 있도록 구성했습니다.
 
-[Live Demo](https://project-2-omega-seven.vercel.app) · [GitHub Repository](https://github.com/som1104/string-time-news)
+[Live Demo](https://string-time-news.vercel.app/) · [GitHub Repository](https://github.com/som1104/string-time-news)
 
 > 현재 공개 데모는 2026년 7월 15일에 수집된 데이터를 기준으로 제공됩니다. Render 무료 인스턴스가 정지된 경우 첫 요청에 시간이 걸릴 수 있습니다.
 
