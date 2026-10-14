@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import NewsCard from '../components/NewsCard';
 import Header from '../components/Header';
-import { API_BASE_URL } from '../../config';
+import { getDailySummary, prefetchAllNews } from '../services/staticNewsService';
 import { Orbit } from 'lucide-react';
 import WeatherIcon from '../components/WeatherIcon';
 
@@ -21,15 +21,10 @@ const Home = () => {
   });
 
   useEffect(() => {
-    // 1. 데일리 요약 데이터 로드 (어제 기준)
-    fetch(`${API_BASE_URL}/api/news/daily-summary`, {
-      headers: { "ngrok-skip-browser-warning": "69420" }
-    })
-      .then(res => res.json())
+    // 1. 데일리 요약 데이터 로드 (정적 daily-news.json, 어제 기준)
+    getDailySummary()
       .then(data => {
-        console.log("새로운 백엔드 응답 전체:", data);
-
-        if (data && data.status === 'success' && Array.isArray(data.data)) {
+        if (data && Array.isArray(data.data)) {
 
           const formattedNews = data.data.map(item => {
             let processedSummary = "";
@@ -79,7 +74,9 @@ const Home = () => {
       .catch(err => {
         console.error("데일리 요약 로딩 오류:", err);
         setNewsList([]);
-      });
+      })
+      // 상세 화면에서 쓰는 전체 뉴스 데이터를 유휴 시간에 미리 받아둔다
+      .finally(() => prefetchAllNews());
   }, []);
 
   useEffect(() => {
@@ -193,7 +190,7 @@ const Home = () => {
             ))
           ) : (
             <div className="w-full text-center py-12 px-4 text-slate-400 font-medium break-keep bg-white rounded-2xl border border-dashed border-slate-200">
-              조회된 어제 뉴스가 없습니다. 백엔드 DB 서버를 확인해주세요.
+              뉴스 데이터를 불러오지 못했습니다. 잠시 후 페이지를 새로고침해 주세요.
             </div>
           )}
         </section>
@@ -203,4 +200,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Home;

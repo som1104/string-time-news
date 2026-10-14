@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { API_BASE_URL } from "../../config";
+import { getHotIssues } from "../services/staticNewsService";
 // 💡 로컬 이미지는 이렇게 import 해야 Vite가 경로를 정확히 인식합니다.
 import defaultImg from "../assets/no_image.png";
 import CategoryBadges from "./CategoryBadges";
@@ -13,16 +13,8 @@ export default function HotIssues({ pointColor, bookmarks, onToggleBookmark }) {
     const fetchHotIssues = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch(`${API_BASE_URL}/api/news/top5`, {
-          headers: { "ngrok-skip-browser-warning": "69420" }
-        });
-
-        if (!response.ok) throw new Error("핫이슈 API 응답 오류");
-
-        const resJson = await response.json();
-        if (resJson.status === "success") {
-          setHotIssues(resJson.data || []);
-        }
+        // 백엔드 GET /api/news/top5 (K-Means 군집 대표 기사 5건)을 미리 추출해 둔 결과
+        setHotIssues(await getHotIssues());
       } catch (error) {
         console.error("핫이슈 데이터 로딩 실패:", error);
       } finally {
@@ -89,4 +81,4 @@ export default function HotIssues({ pointColor, bookmarks, onToggleBookmark }) {
       )}
     </div>
   );
-}
+}
