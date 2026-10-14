@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-// 💡 공통 백엔드 주소를 가져옵니다 (상위로 두 단계 이동)
-import { API_BASE_URL } from '../../config';
+// 💡 공개 데모용 로컬 로그인 (백엔드 /api/login 대응)
+import { loginWithNickname } from '../services/demoAuth';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -21,59 +21,22 @@ const Login = () => {
     try {
       setIsLoading(true);
 
-      // 💡 1단계: 닉네임 중복 확인 (선택 사항이지만 백엔드에 설계된 API를 검증차 활용합니다)
-      const checkRes = await fetch(`${API_BASE_URL}/api/check-nickname?username=${encodeURIComponent(username.trim())}`, {
-       headers: { "ngrok-skip-browser-warning": "69420" }
-      });
-      const checkData = await checkRes.json();
-      
-      // 💡 2단계: 로그인 또는 자동 회원가입 요청 진행
-      const response = await fetch(`${API_BASE_URL}/api/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "69420" // 👈 여기에 추가!
-        },
-        body: JSON.stringify({ username: username.trim() }),
-      });
+      // 💡 공개 데모에서는 서버 대신 브라우저에 닉네임과 user_id 를 보관한다.
+      //    (백엔드 /api/check-nickname, /api/login 과 같은 규칙으로 동작)
+      const user = loginWithNickname(username);
 
-      if (!response.ok) throw new Error("서버 응답 오류");
-      const resJson = await response.json();
-
-      if (resJson.status === "success") {
-        // 💡 백엔드가 돌려준 { user_id, username } 데이터셋을 로컬 스토리지에 세션 대용으로 저장
-        localStorage.setItem("user_id", resJson.data.user_id);
-        localStorage.setItem("username", resJson.data.username);
-
-        // 💡 서버에 저장된 즐겨찾기를 가져와 이 기기의 캐시에 반영 (다른 기기에서 저장한 것도 이어서 보이게)
-        try {
-          const favRes = await fetch(`${API_BASE_URL}/api/favorites?user_id=${resJson.data.user_id}`, {
-            headers: { "ngrok-skip-browser-warning": "69420" }
-          });
-          const favJson = await favRes.json();
-          if (favJson.status === "success") {
-            localStorage.setItem(`news_bookmarks_${resJson.data.user_id}`, JSON.stringify(favJson.data));
-          }
-        } catch (syncError) {
-          console.error("즐겨찾기 서버 동기화 실패:", syncError);
-        }
-
-        // 안내 메시지 가동
-        if (checkData.status === "available") {
-          alert(`🎉 가입을 환영합니다, ${resJson.data.username}님!`);
-        } else {
-          alert(`👋 반갑습니다, ${resJson.data.username}님!`);
-        }
-
-        // 로그인 성공 후 첫 메인 화면(Home.jsx)으로 안전하게 이동
-        navigate('/');
+      // 안내 메시지 가동
+      if (user.isNew) {
+        alert(`🎉 가입을 환영합니다, ${user.username}님!`);
       } else {
-        alert(resJson.message || "로그인 처리에 실패했습니다.");
+        alert(`👋 반갑습니다, ${user.username}님!`);
       }
 
+      // 로그인 성공 후 첫 메인 화면(Home.jsx)으로 안전하게 이동
+      navigate('/');
     } catch (error) {
-      console.error("로그인 연동 중 장애 발생:", error);
-      alert("백엔드 API 서버와 통신할 수 없습니다. 서버 가동 상태를 점검해 주세요.");
+      console.error("로그인 처리 중 오류:", error);
+      alert("로그인 처리에 실패했습니다. 브라우저 설정(개인정보 보호 모드)을 확인해 주세요.");
     } finally {
       setIsLoading(false);
     }

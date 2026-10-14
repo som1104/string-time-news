@@ -1,0 +1,1 @@
+{"generated_at":"2026-10-14T01:48:54+00:00","data_as_of":"2026-07-15","source":"backend/database/news_database.db","counts":{"news":2747,"daily_news":10,"trends":10,"hot_issues":5},"news_id_range":[1,2747],"published_at_range":["Fri, 03 Jul 2026 15:01:00 +0900","Wed, 15 Jul 2026 09:41:00 +0900"]}

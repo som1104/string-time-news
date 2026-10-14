@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { API_BASE_URL } from "../../config";
+import { getNewsList } from "../services/staticNewsService";
 import CategoryBadges from "./CategoryBadges";
 import { normalizeCategories } from "../utils/categories";
 import defaultImg from "../assets/no_image.png";
@@ -46,6 +46,7 @@ export default function CategoryNews({ pointColor, bookmarks, onToggleBookmark }
   const [activeCategory, setActiveCategory] = useState("전체");
   const [isLoading, setIsLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState("");
+  const [loadError, setLoadError] = useState(false);
 
   // 최근 5개 날짜 생성 목록 가져오기
   const recentDates = getRecentDatesList();
@@ -54,25 +55,18 @@ export default function CategoryNews({ pointColor, bookmarks, onToggleBookmark }
     const fetchNews = async () => {
       try {
         setIsLoading(true);
+        setLoadError(false);
 
-        const params = new URLSearchParams();
-        if (activeCategory !== "전체") params.set("category", activeCategory);
-        if (selectedDate) params.set("date", convertToNaverDate(selectedDate));
-        const query = params.toString();
-
-        const newsRes = await fetch(`${API_BASE_URL}/api/news${query ? `?${query}` : ""}`, {
-          headers: { "ngrok-skip-browser-warning": "69420" }
+        // 백엔드 GET /api/news 와 동일한 조건(카테고리 부분매칭 + 날짜 부분매칭, 최신 50건)
+        const rows = await getNewsList({
+          category: activeCategory === "전체" ? "" : activeCategory,
+          date: selectedDate ? convertToNaverDate(selectedDate) : "",
         });
-        const newsJson = await newsRes.json();
-
-        if (newsJson.status === "success") {
-          setNewsList(newsJson.data);
-        } else {
-          setNewsList([]);
-        }
+        setNewsList(rows);
       } catch (error) {
         console.error("뉴스 데이터 연동 오류:", error);
         setNewsList([]);
+        setLoadError(true);
       } finally {
         setIsLoading(false);
       }
@@ -200,9 +194,17 @@ export default function CategoryNews({ pointColor, bookmarks, onToggleBookmark }
           })
         ) : (
           <div className="text-center py-16 px-4 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-            <span className="text-3xl mb-3 block">📭</span>
-            <p className="text-sm font-bold text-slate-600">선택하신 조건에 해당하는 뉴스가 존재하지 않습니다.</p>
-            <p className="text-xs text-slate-400 mt-1">다른 날짜 버튼이나 카테고리를 선택해 보세요.</p>
+            <span className="text-3xl mb-3 block">{loadError ? "⚠️" : "📭"}</span>
+            <p className="text-sm font-bold text-slate-600">
+              {loadError
+                ? "뉴스 데이터를 불러오지 못했습니다."
+                : "선택하신 조건에 해당하는 뉴스가 존재하지 않습니다."}
+            </p>
+            <p className="text-xs text-slate-400 mt-1">
+              {loadError
+                ? "잠시 후 페이지를 새로고침해 주세요."
+                : "다른 날짜 버튼이나 카테고리를 선택해 보세요."}
+            </p>
           </div>
         )}
       </div>

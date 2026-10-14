@@ -6,7 +6,7 @@
 
 [Live Demo](https://string-time-news.vercel.app/) · [GitHub Repository](https://github.com/som1104/string-time-news)
 
-> 현재 공개 데모는 2026년 7월 15일에 수집된 데이터를 기준으로 제공됩니다. Render 무료 인스턴스가 정지된 경우 첫 요청에 시간이 걸릴 수 있습니다.
+> 공개 데모는 2026년 7월 15일에 수집된 뉴스 데이터를 정적 JSON으로 제공합니다. 백엔드 서버 없이 Vercel에서 바로 동작하므로 첫 접속 지연이 없습니다. 서버 연동 버전(FastAPI + SQLite) 구현은 `backend/`에 그대로 보존되어 있습니다.
 
 ## 프로젝트 개요
 
@@ -38,7 +38,7 @@ React를 활용해 로그인, 홈, 상세 화면과 공용 컴포넌트를 구�
 
 ### Login
 
-비밀번호 없이 닉네임만으로 시작할 수 있습니다. 로그인하지 않고 먼저 둘러보는 것도 가능하며, 로그인 사용자의 즐겨찾기는 서버 데이터와 동기화됩니다.
+비밀번호 없이 닉네임만으로 시작할 수 있습니다. 로그인하지 않고 먼저 둘러보는 것도 가능합니다. 서버 연동 버전에서는 로그인 사용자의 즐겨찾기가 서버 데이터와 동기화되고, 공개 데모에서는 같은 규칙으로 브라우저에 저장됩니다.
 
 ### Home
 
@@ -74,6 +74,43 @@ React를 활용해 로그인, 홈, 상세 화면과 공용 컴포넌트를 구�
 
 프론트엔드를 Vercel에 배포한 뒤 FastAPI 백엔드와 통신할 수 있도록 운영 도메인과 Vercel Preview 도메인을 CORS 허용 대상으로 구성했습니다. 또한 React Router 경로를 직접 열거나 새로고침했을 때 404가 발생하지 않도록 Vercel rewrite 설정을 추가했습니다.
 
+## 공개 데모 구성
+
+포트폴리오 공개용 데모는 백엔드 서버 없이 동작합니다. Render 무료 인스턴스의 Cold Start 때문에 첫 접속에서 수십 초가 걸리던 문제를 없애기 위해, SQLite에 저장된 뉴스 데이터를 정적 JSON으로 추출해 프론트엔드와 함께 배포했습니다.
+
+| 구분 | 서버 연동 버전 | 공개 데모 |
+| --- | --- | --- |
+| 데이터 공급 | FastAPI REST API | `frontend/public/data/*.json` |
+| 저장소 | SQLite (`backend/database/news_database.db`) | 같은 DB에서 추출한 정적 JSON |
+| 검색·필터 | SQL `LIKE` 쿼리 | 동일한 조건의 클라이언트 필터 |
+| 로그인·즐겨찾기 | users / favorites 테이블 | localStorage |
+| 배포 | Vercel + Render | Vercel 단독 |
+
+### 데이터 기준
+
+- 기준일: **2026년 7월 15일** (뉴스 2,747건, 데일리 TOP 10, 트렌드 키워드 10건, 핫이슈 5건)
+- 뉴스 제목·요약·카테고리·발행 시각·이미지 URL은 DB 원본을 그대로 사용합니다.
+- 트렌드 키워드와 핫이슈는 백엔드와 동일한 로직(빈도 집계, TF-IDF + K-Means)으로 미리 계산했습니다.
+- 변환 스크립트: `scripts/export_static_data.py`
+
+```bash
+python scripts/export_static_data.py
+```
+
+### 데모에서 지원하는 기능
+
+- 데일리 핵심 뉴스 TOP 10, 뉴스 목록, 핫이슈, 트렌드 키워드
+- 키워드 검색(제목·요약 대상), 카테고리 필터, 날짜 필터, 복합 필터
+- 닉네임 로그인, 즐겨찾기 추가·해제 및 새로고침 후 유지
+
+### 데모에서 제한되는 기능
+
+- 새로운 뉴스 수집과 요약은 동작하지 않습니다(데이터가 기준일에 고정).
+- 로그인·즐겨찾기가 브라우저에 저장되므로 다른 기기나 브라우저와 동기화되지 않습니다.
+- 닉네임 중복 확인은 같은 브라우저에 기록된 닉네임 기준으로만 동작합니다.
+
+서버 연동 버전을 직접 실행하려면 `backend/main.py`를 띄우고 `frontend/.env`에 `VITE_API_BASE_URL`을 지정하면 됩니다. 관련 코드는 모두 저장소에 남아 있습니다.
+
 ## 기술 스택
 
 ### Frontend
@@ -98,6 +135,8 @@ React를 활용해 로그인, 홈, 상세 화면과 공용 컴포넌트를 구�
 
 ## 서비스 구조
 
+서버 연동 버전
+
 ```mermaid
 flowchart LR
     A[React Client] -->|REST API| B[FastAPI Server]
@@ -107,17 +146,31 @@ flowchart LR
     D --> F[Clustering and Summary]
 ```
 
+공개 데모 (Vercel 단독)
+
+```mermaid
+flowchart LR
+    C[(SQLite)] -->|export_static_data.py| G[Static JSON]
+    G --> H[Vercel Static Hosting]
+    H --> A[React Client]
+    A --> I[Client Search and Filter]
+```
+
 ## 폴더 구조
 
 ```text
 string-time-news/
 ├─ frontend/
 │  ├─ public/
+│  │  └─ data/           # 공개 데모용 정적 JSON
 │  └─ src/
 │     ├─ assets/
 │     ├─ components/
 │     ├─ pages/
+│     ├─ services/       # 정적 데이터 조회 계층
 │     └─ utils/
+├─ scripts/
+│  └─ export_static_data.py
 └─ backend/
    ├─ database/
    ├─ utils/
@@ -160,6 +213,8 @@ npm install
 npm run dev
 ```
 
+공개 데모와 동일한 정적 데이터 모드는 백엔드 없이 프론트엔드만 실행해도 그대로 동작합니다.
+
 ## 환경변수
 
 `frontend/.env`
@@ -180,11 +235,10 @@ NAVER_CLIENT_SECRET=your_naver_client_secret
 
 ## 배포
 
-- Frontend: Vercel
-- Backend API: Render
-- Database: SQLite
+- 공개 데모: Vercel 단독 (정적 JSON)
+- 서버 연동 버전: Vercel + Render(FastAPI) + SQLite
 
-프론트엔드는 `VITE_API_BASE_URL` 환경변수를 우선 사용하며, 이를 통해 코드 수정 없이 로컬과 배포 API 주소를 전환할 수 있습니다.
+공개 데모는 `frontend/public/data/*.json`을 그대로 읽으므로 외부 API 호출이 없습니다. 서버 연동 버전에서는 `VITE_API_BASE_URL` 환경변수로 로컬과 배포 API 주소를 전환할 수 있습니다.
 
 React Router 기반 SPA이므로 `frontend/vercel.json`에서 모든 경로를 `index.html`로 rewrite 하도록 설정했고, FastAPI는 운영 도메인과 Vercel Preview 도메인을 CORS 허용 대상으로 구성했습니다.
 

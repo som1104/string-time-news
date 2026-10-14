@@ -3,7 +3,7 @@ import Header from "../components/Header";
 import TrendWordCloud from "../components/TrendWordCloud";
 import HotIssues from "../components/HotIssues";
 import CategoryNews from "../components/CategoryNews";
-import { API_BASE_URL } from "../../config";
+import { searchNewsByKeyword } from "../services/staticNewsService";
 import TodayWeather from '../components/TodayWeather'; // ⭕ TodayWeather import 확인
 
 const Detail = () => {
@@ -35,20 +35,8 @@ const Detail = () => {
       return isExist ? prev.filter((b) => b.id !== item.id) : [...prev, item];
     });
 
-    // 로그인 상태(실제 user_id 보유)일 때만 서버 즐겨찾기와 동기화
-    // (HotIssues/CategoryNews의 카드는 실제 DB news.id를 그대로 갖고 있어 안전하게 연동 가능)
-    if (storedUserId !== "guest") {
-      fetch(`${API_BASE_URL}/api/favorites/toggle`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "69420"
-        },
-        body: JSON.stringify({ user_id: Number(storedUserId), news_id: item.id }),
-      }).catch((error) => {
-        console.error("즐겨찾기 서버 동기화 실패:", error);
-      });
-    }
+    // 공개 데모에서는 서버 동기화 없이 사용자별 localStorage 키에만 저장한다.
+    // (서버 즐겨찾기 API는 backend/main.py 의 /api/favorites/* 에 그대로 남아 있다)
   };
 
   const handleSearch = async (e) => {
@@ -59,11 +47,8 @@ const Detail = () => {
     }
     try {
       setIsSearching(true);
-      const response = await fetch(`${API_BASE_URL}/api/news/keyword/${encodeURIComponent(searchQuery)}`, {
-        headers: { "ngrok-skip-browser-warning": "69420" }
-      });
-      const resJson = await response.json();
-      setSearchResults(resJson.data || []);
+      // 백엔드 GET /api/news/keyword/{kw} 와 동일한 조건으로 정적 데이터에서 검색
+      setSearchResults(await searchNewsByKeyword(searchQuery));
     } catch (error) {
       console.error("실제 뉴스 검색 실패:", error);
       setSearchResults([]);
@@ -185,4 +170,4 @@ const Detail = () => {
   );
 };
 
-export default Detail;
+export default Detail;

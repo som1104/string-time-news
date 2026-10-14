@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { API_BASE_URL } from "../../config"; // 💡 환경변수 중앙 설정에서 가져오기
+import { getTrendKeywords, searchNewsByKeyword } from "../services/staticNewsService";
 
 export default function TrendWordCloud({ pointColor, bookmarks, onToggleBookmark }) {
   const [keywords, setKeywords] = useState([]);
@@ -13,22 +13,9 @@ export default function TrendWordCloud({ pointColor, bookmarks, onToggleBookmark
   const fetchNewsForKeyword = async (keywordText) => {
     try {
       setIsNewsLoading(true);
-      const response = await fetch(`${API_BASE_URL}/api/news/keyword/${encodeURIComponent(keywordText)}`, {
-        headers: { "ngrok-skip-browser-warning": "69420" }
-      });
-
-      if (!response.ok) throw new Error("네트워크 응답 오류");
-
-      const resJson = await response.json();
-      
-      let limitNews = [];
-      if (resJson.status === "success" && Array.isArray(resJson.data)) {
-        limitNews = resJson.data.slice(0, 4);
-      } else if (Array.isArray(resJson)) {
-        limitNews = resJson.slice(0, 4);
-      }
-      
-      setKeywordNewsList(limitNews);
+      // 백엔드 GET /api/news/keyword/{kw} 와 동일한 검색(제목·요약 부분매칭)
+      const matched = await searchNewsByKeyword(keywordText);
+      setKeywordNewsList(matched.slice(0, 4));
     } catch (error) {
       console.error("단어별 뉴스 로드 실패:", error);
       setKeywordNewsList([]);
@@ -41,24 +28,13 @@ export default function TrendWordCloud({ pointColor, bookmarks, onToggleBookmark
     const fetchKeywords = async () => {
       try {
         setIsLoading(true);
-        // 💡 1. 백엔드 실시간 트렌드 실제 API 주소(/api/news/trend)로 변경
-        const response = await fetch(`${API_BASE_URL}/api/news/trend`, {
-          headers: { "ngrok-skip-browser-warning": "69420" }
-        });
-        
-        let loadedKeywords = [];
+        // 💡 1. 정적 데이터(trends.json)에서 트렌드 키워드 조회 (백엔드 /api/news/trend 와 동일 결과)
+        const trendRows = await getTrendKeywords();
 
-        if (response.ok) {
-          const data = await response.json();
-          
-          if (data.status === "success" && Array.isArray(data.data)) {
-            // 💡 2. 백엔드의 'keyword' 변수명을 프론트엔드의 'text' 구조로 알맞게 변환 매핑
-            loadedKeywords = data.data.map(item => ({
-              text: item.keyword,
-              count: item.count
-            })).slice(0, 5); // 상위 5개만 노출
-          }
-        }
+        // 💡 2. 백엔드의 'keyword' 변수명을 프론트엔드의 'text' 구조로 알맞게 변환 매핑
+        let loadedKeywords = trendRows
+          .map((item) => ({ text: item.keyword, count: item.count }))
+          .slice(0, 5); // 상위 5개만 노출
         
         // 💡 3. 데이터베이스에 뉴스 기사가 전혀 없을 때 작동할 안전한 방어용 데이터(Fallback)
         if (!loadedKeywords || loadedKeywords.length === 0) {
@@ -200,4 +176,4 @@ export default function TrendWordCloud({ pointColor, bookmarks, onToggleBookmark
       )}
     </div>
   );
-}
+}
